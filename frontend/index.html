@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Text to SPARQL</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Text-to-SPARQL Chat</h1>
+            <p>Generate SPARQL queries from natural language questions.</p>
+        </header>
+        <main>
+            <div class="form">
+                <label for="question">Question</label>
+                <textarea id="question" placeholder="Enter your question..."></textarea>
+
+                <div class="controls">
+                    <div>
+                        <label for="provider">Provider</label>
+                        <select id="provider">
+                            <option value="openai">OpenAI</option>
+                            <option value="deepseek">DeepSeek</option>
+                            <option value="gemini">Gemini</option>
+                            <option value="openrouter">OpenRouter</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="model">Model</label>
+                        <input id="model" type="text" value="gpt-4.1" />
+                    </div>
+                    <div>
+                        <label for="technique">Technique</label>
+                        <select id="technique">
+                            <option value="zero_shot">Zero-Shot</option>
+                            <option value="graph_of_thought" disabled>Graph-of-Thought (coming soon)</option>
+                            <option value="dynamic_prompt" disabled>Dynamic Prompt (coming soon)</option>
+                        </select>
+                    </div>
+                </div>
+                <button id="generate">Generate SPARQL</button>
+            </div>
+            <div id="chat">
+                <div class="message system">Welcome! Ask a question to generate SPARQL.</div>
+            </div>
+        </main>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>

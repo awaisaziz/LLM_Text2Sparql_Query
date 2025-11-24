@@ -1,0 +1,12 @@
+{
+  "dataset_paths": {
+    "qald_9_dbpedia": "../data/qald_9_train_100.json"
+  },
+  // "default_provider": "deepseek",
+  // "default_model": "deepseek-chat",
+  "default_provider": "gemini",
+  "default_model": "Gemini 2.0 Flash-Lite",
+  "default_prompting_technique": "zero_shot",
+  "max_tokens": 4000,
+  "output_file": "../outputs/predicted/predictions.json"
+}
