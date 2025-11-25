@@ -18,6 +18,7 @@ class Config:
     default_prompting_technique: str
     max_tokens: int
     output_file: str
+    request_delay: float
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "Config":
@@ -28,6 +29,7 @@ class Config:
             default_prompting_technique=data.get("default_prompting_technique", "zero_shot"),
             max_tokens=int(data.get("max_tokens", 4000)),
             output_file=data.get("output_file", "../outputs/predicted/predictions.json"),
+            request_delay=float(data.get("request_delay", 2.0)),
         )
 
 

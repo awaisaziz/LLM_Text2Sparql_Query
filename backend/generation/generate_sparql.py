@@ -5,6 +5,7 @@ import asyncio
 import json
 from pathlib import Path
 from typing import List, Dict, Optional
+import re
 
 from tqdm import tqdm
 
@@ -27,14 +28,56 @@ def _build_prompts(question: str, technique: str) -> Dict[str, str]:
         prompts = prompt_builder.dynamic_prompt(question)
     else:
         raise ValueError(f"Unsupported prompting technique: {technique}")
-
-    logger.info("System prompt: %s", prompts["system"])
-    logger.info("User prompt: %s", prompts["user"])
     return prompts
 
 
 def _clean_sparql(raw: str) -> str:
-    return raw.strip()
+    if not raw:
+        return ""
+
+    text = raw.strip()
+
+    # ----------------------------------------------------------
+    # 1. Remove markdown fences ``` or ```sparql
+    # ----------------------------------------------------------
+    text = re.sub(r"^```(?:sparql)?\s*", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s*```$", "", text)
+
+    # ----------------------------------------------------------
+    # 2. Remove common prefixes like:
+    #    "SPARQL Query:", "The SPARQL query is:", etc.
+    # ----------------------------------------------------------
+    text = re.sub(r"(?i)^sparql\s*query:\s*", "", text)
+    text = re.sub(r"(?i)^the\s*sparql\s*(query|statement)\s*(is)?:\s*", "", text)
+
+    # ----------------------------------------------------------
+    # 3. Extract starting point of real SPARQL:
+    #    PREFIX, SELECT, ASK, CONSTRUCT, DESCRIBE
+    # ----------------------------------------------------------
+    pattern = r"(?i)(PREFIX|SELECT|ASK|CONSTRUCT|DESCRIBE)\b"
+    match = re.search(pattern, text)
+    if match:
+        text = text[match.start():]
+
+    # ----------------------------------------------------------
+    # 4. Remove trailing markdown, comments, or extra prose
+    # ----------------------------------------------------------
+    # Remove content after closing brace, if LLM adds explanation
+    closing_brace = re.search(r"\}\s*$", text)
+    if not closing_brace:
+        # Try to cut after the last `}`
+        idx = text.rfind("}")
+        if idx != -1:
+            text = text[:idx+1]
+
+    # ----------------------------------------------------------
+    # 5. Clean up: collapse whitespace + remove backticks
+    # ----------------------------------------------------------
+    text = re.sub(r"`+", "", text)
+    text = re.sub(r"\s+", " ", text).strip()
+
+    return text
+
 
 
 def _load_dataset(path: str) -> List[Dict[str, str]]:
@@ -48,13 +91,22 @@ def _save_predictions(predictions: List[Dict[str, str]], output_path: Path) -> N
     logger.info("Saved predictions to %s", output_path)
 
 
-async def _generate_entries(entries: List[Dict[str, str]], config: Config, technique: str) -> List[Dict[str, str]]:
-    router = ModelRouter(provider=config.default_provider, model=config.default_model)
+async def _generate_entries(
+    entries: List[Dict[str, str]],
+    config: Config,
+    technique: str,
+    provider: str,
+    model: str,
+    num_samples: Optional[int] = None,
+    request_delay: float = 0.0,
+) -> List[Dict[str, str]]:
+    router = ModelRouter(provider=provider, model=model)
     predictions: List[Dict[str, str]] = []
-    
-    count = 1
 
-    for entry in tqdm(entries, desc="Generating SPARQL"):
+    if num_samples is not None:
+        entries = entries[:num_samples]
+
+    for idx, entry in enumerate(tqdm(entries, desc="Generating SPARQL"), start=1):
         question = entry.get("en_ques", "")
         prompts = _build_prompts(question, technique)
     
@@ -65,7 +117,6 @@ async def _generate_entries(entries: List[Dict[str, str]], config: Config, techn
                 max_tokens=config.max_tokens,
             )
             sparql = _clean_sparql(sparql)
-            logger.info("Predicted SPARQL: %s", sparql)
         except Exception as exc:
             logger.error("Error generating SPARQL for id %s: %s", entry.get("id"), exc)
             sparql = ""
@@ -77,27 +128,59 @@ async def _generate_entries(entries: List[Dict[str, str]], config: Config, techn
                 "sparql": sparql,
             }
         )
-        
-        # Test 5 sparql queries only
-        if count > 5:
-            break
-        count += 1
+
+        # Respect provider rate limits by spacing out requests if configured
+        # if request_delay > 0:
+        #     await asyncio.sleep(request_delay)
+
+        # Sleep 60 seconds after every 9 queries
+        if idx % 9 == 0:
+            logger.info("⏳ Rate limit: sleeping for 1 minute...")
+            await asyncio.sleep(request_delay)
     return predictions
 
 
-def batch_generate(dataset_path: str, technique: str = "zero_shot", config_override: Optional[str] = None) -> None:
+def batch_generate(
+    dataset_path: str,
+    technique: str = "zero_shot",
+    provider: Optional[str] = None,
+    model: Optional[str] = None,
+    num_samples: Optional[int] = None,
+    config_override: Optional[str] = None,
+) -> None:
+
     config = load_config(config_override)
-    entries = _load_dataset(dataset_path)
+    provider_to_use = provider or config.default_provider
+    model_to_use = model or config.default_model
+
+    project_root = Path(__file__).resolve().parents[1]
+    dataset_path_resolved = Path(dataset_path)
+    if not dataset_path_resolved.is_absolute():
+        dataset_path_resolved = (project_root / dataset_path_resolved).resolve()
+    entries = _load_dataset(str(dataset_path_resolved))
+
     output_path = Path(config.output_file)
+    if not output_path.is_absolute():
+        output_path = (project_root / output_path).resolve()
 
     logger.info(
-        "Starting batch generation using technique=%s, provider=%s, model=%s",
+        "Starting batch generation using technique=%s, provider=%s, model=%s, num_samples=%s",
         technique,
-        config.default_provider,
-        config.default_model,
+        provider_to_use,
+        model_to_use,
+        num_samples if num_samples is not None else "all",
     )
 
-    predictions = asyncio.run(_generate_entries(entries, config, technique))
+    predictions = asyncio.run(
+        _generate_entries(
+            entries,
+            config,
+            technique,
+            provider=provider_to_use,
+            model=model_to_use,
+            num_samples=num_samples,
+        )
+    )
     _save_predictions(predictions, output_path)
 
 

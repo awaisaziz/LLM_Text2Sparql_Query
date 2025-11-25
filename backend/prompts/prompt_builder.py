@@ -10,15 +10,10 @@ Convert natural language questions into correct SPARQL queries.
 
 Rules:
 1. Output only a valid SPARQL query.
-2. Use these prefixes:
-   PREFIX dbo: <http://dbpedia.org/ontology/>
-   PREFIX dbr: <http://dbpedia.org/resource/>
-   PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-3. Convert entity names to DBpedia IRIs using dbr: with Title_Case_Underscores.
-4. Use dbo:* properties when possible. Do not invent properties.
-5. Always return a single variable (?x, ?item, or ?entity).
-6. Ensure the SPARQL query is syntactically correct and executable.
+2. Use below prefixes for the queries.
+3. Use dbo:* properties when possible. Do not invent properties.
+4. Always return a single variable (?x, ?item, or ?entity).
+5. Ensure the SPARQL query is syntactically correct and executable query.
 """.strip()
 
 

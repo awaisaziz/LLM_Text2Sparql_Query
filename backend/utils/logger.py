@@ -12,26 +12,38 @@ LOG_DIR.mkdir(parents=True, exist_ok=True)
 LOG_FILE = LOG_DIR / "backend.log"
 DEFAULT_LEVEL = "INFO"
 
+_logging_initialized = False
 
 def get_logger(name: Optional[str] = None, level: str = DEFAULT_LEVEL) -> logging.Logger:
+    global _logging_initialized
+
     logger = logging.getLogger(name)
-    if logger.handlers:
-        return logger
 
-    logger.setLevel(getattr(logging, level.upper(), logging.INFO))
+    # Configure logging ONCE globally
+    if not _logging_initialized:
+        logger.setLevel(getattr(logging, level.upper(), logging.INFO))
 
-    formatter = logging.Formatter(
-        "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-    )
+        formatter = logging.Formatter(
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+        )
 
-    file_handler = RotatingFileHandler(LOG_FILE, maxBytes=5 * 1024 * 1024, backupCount=2)
-    file_handler.setFormatter(formatter)
-    logger.addHandler(file_handler)
+        # Create file handler (overwrite mode)
+        file_handler = logging.FileHandler(LOG_FILE, mode="w")
+        file_handler.setFormatter(formatter)
 
-    stream_handler = logging.StreamHandler()
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
+        # Create console handler
+        stream_handler = logging.StreamHandler()
+        stream_handler.setFormatter(formatter)
 
-    logger.info("Logging setup completed. Logs will be written to %s", LOG_FILE)
+        # Attach to ROOT LOGGER
+        root_logger = logging.getLogger()
+        root_logger.setLevel(logger.level)
+        root_logger.addHandler(file_handler)
+        root_logger.addHandler(stream_handler)
+
+        _logging_initialized = True
+        root_logger.info("Logging setup completed. Logs will be written to %s", LOG_FILE)
+
     return logger
+
 

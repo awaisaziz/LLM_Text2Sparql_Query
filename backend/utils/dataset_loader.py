@@ -8,7 +8,7 @@ from typing import List, Dict
 from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
-
+PROJECT_ROOT = Path(__file__).resolve().parent
 
 def load_qald_9(path: str) -> List[Dict[str, str]]:
     """Load QALD-9 dataset and extract English questions.
