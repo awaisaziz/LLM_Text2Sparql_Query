@@ -87,7 +87,9 @@ python run_query.py --input ../data/qald_9_train_100.json --output executed/qald
 
 To execute the run_query file for the predicted query:
 ```bash
-python run_query.py --input ../outputs/predicted/predictions.json --output executed/predicted_zero_shot.json
+python run_query.py --input ../outputs/predicted/deepseek-chat_zero_shot.json --output executed/deepseek-chat_zero_shot_executed.json
+
+python run_query.py --input ../outputs/predicted/gemini-2.5-flash-lite_zero_shot.json --output executed/gemini-2.5-flash-lite_zero_shot_executed.json
 ```
 
 ## Extending the System

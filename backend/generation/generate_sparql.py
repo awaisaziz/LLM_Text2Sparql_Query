@@ -1,7 +1,7 @@
 """SPARQL generation engine supporting batch mode."""
 from __future__ import annotations
 
-import asyncio
+import time
 import json
 from pathlib import Path
 from typing import List, Dict, Optional
@@ -44,15 +44,19 @@ def _clean_sparql(raw: str) -> str:
     text = re.sub(r"\s*```$", "", text)
 
     # ----------------------------------------------------------
-    # 2. Remove common prefixes like:
-    #    "SPARQL Query:", "The SPARQL query is:", etc.
+    # 2. Remove escaped quotes: \" → "
+    # ----------------------------------------------------------
+    text = text.replace('\\"', '"')
+    text = text.replace('"', "'")
+
+    # ----------------------------------------------------------
+    # 3. Remove common leading phrases
     # ----------------------------------------------------------
     text = re.sub(r"(?i)^sparql\s*query:\s*", "", text)
     text = re.sub(r"(?i)^the\s*sparql\s*(query|statement)\s*(is)?:\s*", "", text)
 
     # ----------------------------------------------------------
-    # 3. Extract starting point of real SPARQL:
-    #    PREFIX, SELECT, ASK, CONSTRUCT, DESCRIBE
+    # 4. Extract start of actual SPARQL: PREFIX | SELECT | ASK | ...
     # ----------------------------------------------------------
     pattern = r"(?i)(PREFIX|SELECT|ASK|CONSTRUCT|DESCRIBE)\b"
     match = re.search(pattern, text)
@@ -60,24 +64,18 @@ def _clean_sparql(raw: str) -> str:
         text = text[match.start():]
 
     # ----------------------------------------------------------
-    # 4. Remove trailing markdown, comments, or extra prose
+    # 5. Keep everything until final "}"
     # ----------------------------------------------------------
-    # Remove content after closing brace, if LLM adds explanation
-    closing_brace = re.search(r"\}\s*$", text)
-    if not closing_brace:
-        # Try to cut after the last `}`
-        idx = text.rfind("}")
-        if idx != -1:
-            text = text[:idx+1]
+    last_brace = text.rfind("}")
+    if last_brace != -1:
+        text = text[:last_brace+1]
 
     # ----------------------------------------------------------
-    # 5. Clean up: collapse whitespace + remove backticks
+    # 6. Collapse into a single line (your requirement)
     # ----------------------------------------------------------
-    text = re.sub(r"`+", "", text)
     text = re.sub(r"\s+", " ", text).strip()
 
     return text
-
 
 
 def _load_dataset(path: str) -> List[Dict[str, str]]:
@@ -91,7 +89,7 @@ def _save_predictions(predictions: List[Dict[str, str]], output_path: Path) -> N
     logger.info("Saved predictions to %s", output_path)
 
 
-async def _generate_entries(
+def _generate_entries(
     entries: List[Dict[str, str]],
     config: Config,
     technique: str,
@@ -111,16 +109,18 @@ async def _generate_entries(
         prompts = _build_prompts(question, technique)
     
         try:
-            sparql = await router.generate(
+            sparql = router.generate_sync(
                 system_prompt=prompts["system"],
                 user_prompt=prompts["user"],
                 max_tokens=config.max_tokens,
             )
             sparql = _clean_sparql(sparql)
+            
         except Exception as exc:
             logger.error("Error generating SPARQL for id %s: %s", entry.get("id"), exc)
             sparql = ""
-
+        
+        print(f"\nQuestion: {question}\nGenerated SPARQL: {sparql}\n")
         predictions.append(
             {
                 "id": entry.get("id", ""),
@@ -130,13 +130,13 @@ async def _generate_entries(
         )
 
         # Respect provider rate limits by spacing out requests if configured
-        # if request_delay > 0:
-        #     await asyncio.sleep(request_delay)
-
-        # Sleep 60 seconds after every 9 queries
-        if idx % 9 == 0:
-            logger.info("⏳ Rate limit: sleeping for 1 minute...")
-            await asyncio.sleep(request_delay)
+        if request_delay > 0 and idx % 12 == 0:
+            logger.info(
+                "⏳ Rate limit: sleeping for %.0f seconds after %d queries...",
+                request_delay,
+                idx,
+            )
+            time.sleep(request_delay)
     return predictions
 
 
@@ -171,15 +171,14 @@ def batch_generate(
         num_samples if num_samples is not None else "all",
     )
 
-    predictions = asyncio.run(
-        _generate_entries(
-            entries,
-            config,
-            technique,
-            provider=provider_to_use,
-            model=model_to_use,
-            num_samples=num_samples,
-        )
+    predictions = _generate_entries(
+        entries,
+        config,
+        technique,
+        provider=provider_to_use,
+        model=model_to_use,
+        num_samples=num_samples,
+        request_delay=config.request_delay,
     )
     _save_predictions(predictions, output_path)
 

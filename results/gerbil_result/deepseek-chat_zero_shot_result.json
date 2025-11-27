@@ -1,0 +1,64 @@
+{
+  "@graph": [
+    {
+      "@id": "http://gerbil-qa.aksw.org/gerbil/experiment?id=202511250005",
+      "@type": [
+        "gerbil:Experiment",
+        "qb:Dataset"
+      ],
+      "structure": "gerbil:dsd",
+      "experimentType": "gerbil:QA",
+      "matching": "gerbil:StrongEntityMatch",
+      "label": "Experiment 202511250005"
+    },
+    {
+      "@id": "http://gerbil-qa.aksw.org/gerbil/experimentTask_407614",
+      "@type": "qb:Observation",
+      "dataset": "http://gerbil-qa.aksw.org/gerbil/experiment?id=202511250005",
+      "annotator": "http://gerbil-qa.aksw.org/gerbil/dataId/annotators/qald_9",
+      "gerbil:dataset": "http://gerbil-qa.aksw.org/gerbil/dataId/corpora/deepseek-chat_zero_shot_(uploaded)",
+      "language": "http://gerbil-qa.aksw.org/gerbil/dataId/languages/en",
+      "statusCode": "-1",
+      "timestamp": "2025-11-25T21:24:32.767Z"
+    }
+  ],
+  "@context": {
+    "dataset": {
+      "@id": "http://purl.org/linked-data/cube#dataset"
+    },
+    "timestamp": {
+      "@id": "http://w3id.org/gerbil/vocab#timestamp",
+      "@type": "http://www.w3.org/2001/XMLSchema#dateTime"
+    },
+    "statusCode": {
+      "@id": "http://w3id.org/gerbil/vocab#statusCode",
+      "@type": "http://www.w3.org/2001/XMLSchema#int"
+    },
+    "language": {
+      "@id": "http://w3id.org/gerbil/vocab#language"
+    },
+    "annotator": {
+      "@id": "http://w3id.org/gerbil/vocab#annotator"
+    },
+    "matching": {
+      "@id": "http://w3id.org/gerbil/vocab#matching",
+      "@type": "@id"
+    },
+    "experimentType": {
+      "@id": "http://w3id.org/gerbil/vocab#experimentType",
+      "@type": "@id"
+    },
+    "structure": {
+      "@id": "http://purl.org/linked-data/cube#structure",
+      "@type": "@id"
+    },
+    "label": {
+      "@id": "http://www.w3.org/2000/01/rdf-schema#label"
+    },
+    "qb": "http://purl.org/linked-data/cube#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "gerbil": "http://w3id.org/gerbil/vocab#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+  }
+}

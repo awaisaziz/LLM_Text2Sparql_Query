@@ -83,14 +83,14 @@
         "en_key": "country, place, cave, more than two",
         "de_ques": "in welchen ländern gibt es orte mit mehr als zwei höhlen?",
         "de_key": "land, ort, höhle, mehr als zwei",
-        "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?uri WHERE { ?cave rdf:type dbo:Cave ; dbo:location ?uri . ?uri rdf:type dbo:Country } GROUP BY ?uri HAVING ( COUNT(?cave) > 2 )",
+        "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?uri WHERE { ?cave rdf:type dbo:Cave ; dbo:location ?uri . ?uri rdf:type dbo:Country } GROUP BY ?uri HAVING ( COUNT (?cave) > 2 )",
         "entities": [],
         "relations": [
             "Cave",
             "location",
             "Country"
         ],
-        "fil_sparql": "SELECT DISTINCT ?uri WHERE { ?cave rdf:type dbo:Cave ; dbo:location ?uri . ?uri rdf:type dbo:Country } GROUP BY ?uri HAVING ( COUNT(?cave) > 2 )"
+        "fil_sparql": "SELECT DISTINCT ?uri WHERE { ?cave rdf:type dbo:Cave ; dbo:location ?uri . ?uri rdf:type dbo:Country } GROUP BY ?uri HAVING ( COUNT (?cave) > 2 )"
     },
     {
         "id": "7",

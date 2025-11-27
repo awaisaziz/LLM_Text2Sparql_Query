@@ -1,6 +1,7 @@
 """Model router to abstract provider-specific clients."""
 from __future__ import annotations
 
+import asyncio
 from typing import Dict, Type
 
 from backend.models.providers.deepseek_client import DeepSeekClient
@@ -30,4 +31,9 @@ class ModelRouter:
 
     async def generate(self, system_prompt: str, user_prompt: str, max_tokens: int) -> str:
         return await self.client.generate(system_prompt, user_prompt, max_tokens)
+
+    def generate_sync(self, system_prompt: str, user_prompt: str, max_tokens: int) -> str:
+        """Synchronous wrapper around the async client for sequential batch runs."""
+
+        return asyncio.run(self.generate(system_prompt, user_prompt, max_tokens))
 
