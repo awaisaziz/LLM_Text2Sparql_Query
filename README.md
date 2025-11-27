@@ -17,21 +17,6 @@ A modular Text-to-SPARQL generation scaffold that supports FastAPI serving, CLI 
   - **logs/** – Application logs (e.g., `backend.log`).
 - **requirements.txt** – Python dependencies.
 
-## Architecture Flow
-```mermaid
-flowchart TD
-    A[User Question (Frontend or CLI)]
-    --> B[FastAPI API / CLI Entry<br/>backend/main.py]
-    B --> C[Prompt Builder<br/>backend/prompts]
-    C --> D[Model Router<br/>backend/models/model_router.py]
-    D --> E[Provider Clients<br/>OpenAI, DeepSeek, Gemini, OpenRouter]
-    E --> F[LLM Response]
-    F --> G[SPARQL Assembly<br/>backend/generation/generate_sparql.py]
-    G --> H[Outputs<br/>predictions & logs]
-    B --> I[Dataset Loader<br/>backend/utils/dataset_loader.py]
-    I --> G
-```
-
 ## Environment Setup (run from repo root)
 1. Create and activate a Python virtual environment:
    ```bash
@@ -43,12 +28,12 @@ flowchart TD
    pip install -r requirements.txt
    ```
 3. Provide provider API keys as environment variables (or place them in a `.env` file at the repo root):
-   <!-- ```bash
+   ```bash
    export OPENAI_API_KEY="your-key"
    export DEEPSEEK_API_KEY="your-key"
    export GEMINI_API_KEY="your-key"
    export OPENROUTER_API_KEY="your-key"
-   ``` -->
+   ```
    Environment variables from `.env` are loaded automatically by the backend.
 
 ## Running the Backend API Server
@@ -88,7 +73,9 @@ python run_query.py --input ../data/qald_9_train_100.json --output executed/qald
 To execute the run_query file for the predicted query:
 ```bash
 python run_query.py --input ../outputs/predicted/deepseek-chat_zero_shot.json --output executed/deepseek-chat_zero_shot_executed.json
+```
 
+```bash
 python run_query.py --input ../outputs/predicted/gemini-2.5-flash-lite_zero_shot.json --output executed/gemini-2.5-flash-lite_zero_shot_executed.json
 ```
 
