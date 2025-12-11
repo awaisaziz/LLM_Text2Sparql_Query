@@ -31,6 +31,11 @@ From the repository root:
 ```bash
 python backend/main.py --generate-dataset ../data/qald_9_train_100.json --technique zero_shot --provider gemini --model gemini-2.0-flash-lite --num_samples 1
 ```
+For using deepseek you can use the following command:
+```bash
+python backend/main.py --generate-dataset ../data/qald_9_train_100.json --technique GoT --provider deepseek --model deepseek-chat --num_samples 1
+```
+
 Arguments:
 - `--generate-dataset` – Path to the dataset JSON file.
 - `--technique` – Prompting technique (defaults to `zero_shot`).

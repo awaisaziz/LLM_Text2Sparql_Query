@@ -1,6 +1,19 @@
-# Text-to-SPARQL System
+# SparqMind: An Intelligent SPARQL Reasoning Engine
 
-A modular Text-to-SPARQL generation scaffold that supports FastAPI serving, CLI batch generation, and flexible model routing across multiple providers.
+**SparqMind** is a modular, multi-provider **Text-to-SPARQL reasoning engine** designed to convert natural language questions into executable SPARQL queries over **DBpedia**. The system is optimized for research and experimentation using benchmark datasets such as **QALD-9 (100 queries)**, and provides a flexible, extensible architecture for prompt-driven SPARQL generation.
+
+SparqMind integrates several core components:
+
+* **Zero-Shot prompting** for baseline SPARQL generation
+* **Multi-LLM routing** across OpenAI, DeepSeek, Gemini, and OpenRouter
+* **Batch SPARQL generation** with a CLI interface for dataset-level experiments
+* **A modern React chat interface** for conversational, ChatGPT-style querying
+* **A configurable backend pipeline** built on FastAPI
+* **Structured logging and reproducible evaluation workflows**
+
+The backend exposes a clean `/generate` endpoint for interactive SPARQL generation, while the CLI mode enables rapid experimentation over datasets such as QALD-9. The frontend and backend run independently: React provides an aesthetic chat interface for users to ask questions naturally, and FastAPI handles prompt construction, model orchestration, SPARQL synthesis, and logging.
+
+SparqMind is designed as a research oriented platform that makes it easy to explore how large language models interpret natural language intentions and map them to structured SPARQL queries in the context of DBpedia.
 
 ## Repository Layout
 - **backend/** – FastAPI app, batch generator, prompt builders, and model routing code.
@@ -27,14 +40,7 @@ A modular Text-to-SPARQL generation scaffold that supports FastAPI serving, CLI 
    ```bash
    pip install -r requirements.txt
    ```
-3. Provide provider API keys as environment variables (or place them in a `.env` file at the repo root):
-   ```bash
-   export OPENAI_API_KEY="your-key"
-   export DEEPSEEK_API_KEY="your-key"
-   export GEMINI_API_KEY="your-key"
-   export OPENROUTER_API_KEY="your-key"
-   ```
-   Environment variables from `.env` are loaded automatically by the backend.
+3. Environment variables from `.env` are loaded automatically by the backend.
 
 ## Running the Backend API Server
 From the repository root:
@@ -51,8 +57,9 @@ The server listens on `http://127.0.0.1:8000` and exposes `POST /generate`.
 ## CLI Batch Generation
 Generate SPARQL for a dataset from the root directory:
 ```bash
-python backend/main.py --generate-dataset ../data/qald_9_train_100.json --technique zero_shot --provider gemini --model gemini-2.0-flash-lite --num_samples 1
+python backend/main.py --generate-dataset ../data/qald_9_train_100.json --technique GoT --provider deepseek --model deepseek-chat --num_samples 1
 ```
+
 - The dataset and output paths are resolved relative to the repository root, so the above command works as-is.
 - Omit `--provider` or `--model` to fall back to `backend/config/config.json` defaults.
 - Omit `--num_samples` to process the full dataset; pass a value to quickly test a subset.
@@ -73,10 +80,6 @@ python run_query.py --input ../data/qald_9_train_100.json --output executed/qald
 To execute the run_query file for the predicted query:
 ```bash
 python run_query.py --input ../outputs/predicted/deepseek-chat_zero_shot.json --output executed/deepseek-chat_zero_shot_executed.json
-```
-
-```bash
-python run_query.py --input ../outputs/predicted/gemini-2.5-flash-lite_zero_shot.json --output executed/gemini-2.5-flash-lite_zero_shot_executed.json
 ```
 
 ## Extending the System

@@ -44,7 +44,7 @@ def _clean_sparql(raw: str) -> str:
     text = re.sub(r"\s*```$", "", text)
 
     # ----------------------------------------------------------
-    # 2. Remove escaped quotes: \" → "
+    # 2. Remove escaped quotes: \" and replace double quotes with single quotes"
     # ----------------------------------------------------------
     text = text.replace('\\"', '"')
     text = text.replace('"', "'")
