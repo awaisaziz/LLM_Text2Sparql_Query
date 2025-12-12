@@ -8,6 +8,7 @@ from typing import List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 # Ensure the project root is on ``sys.path`` when invoking as ``python backend/main.py``
@@ -33,6 +34,14 @@ logger = get_logger(__name__)
 
 config: Config = load_config()
 app = FastAPI(title="Text-to-SPARQL API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class PlannerItem(BaseModel):
@@ -85,10 +94,10 @@ async def generate_sparql(request: GenerateRequest):
             )
             logger.info("[Planner] (async) Context:\n%s", plan.as_bullet_list())
 
-        prompts = _build_prompts(request.question, technique, plan)
+        prompts = build_prompts(request.question, technique, plan)
         logger.info("User prompt: %s", prompts["user"])
 
-        sparql = await _generate_with_retries_async(
+        sparql = await generate_with_retries_async(
             router=router,
             prompts=prompts,
             question=request.question,
