@@ -4,11 +4,11 @@ from __future__ import annotations
 import argparse
 import sys
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 # Ensure the project root is on ``sys.path`` when invoking as ``python backend/main.py``
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -23,8 +23,8 @@ from backend.config.config_loader import load_config, Config
 from backend.generation import planner
 from backend.generation.generate_sparql import (
     batch_generate,
-    _build_prompts,
-    _generate_with_retries_async,
+    build_prompts,
+    generate_with_retries_async,
 )
 from backend.models.model_router import ModelRouter
 from backend.utils.logger import get_logger
@@ -35,11 +35,29 @@ config: Config = load_config()
 app = FastAPI(title="Text-to-SPARQL API")
 
 
+class PlannerItem(BaseModel):
+    text: str
+    uri: Optional[str] = None
+
+
+class PlannerPlan(BaseModel):
+    entities: List[PlannerItem] = Field(default_factory=list)
+    relations: List[PlannerItem] = Field(default_factory=list)
+    chain_of_thought: List[str] = Field(default_factory=list)
+
+
+class PlanRequest(BaseModel):
+    question: str
+    provider: Optional[str] = None
+    model: Optional[str] = None
+
+
 class GenerateRequest(BaseModel):
     question: str
     provider: Optional[str] = None
     model: Optional[str] = None
     technique: str = "zero_shot"
+    plan: Optional[PlannerPlan] = None
 
 
 @app.post("/generate")
@@ -53,8 +71,15 @@ async def generate_sparql(request: GenerateRequest):
     )
     try:
         router = ModelRouter(provider=provider, model=model)
-        plan = None
-        if technique.lower() in {"chain_of_thought", "graph_of_thought"}:
+        plan: Optional[planner.PlannerOutput] = None
+        if request.plan:
+            plan = planner.PlannerOutput(
+                entities=[item.model_dump() for item in request.plan.entities],
+                relations=[item.model_dump() for item in request.plan.relations],
+                chain_of_thought=request.plan.chain_of_thought,
+            )
+            logger.info("[Planner] Using client-supplied plan:\n%s", plan.as_bullet_list())
+        elif technique.lower() in {"chain_of_thought", "graph_of_thought"}:
             plan = await planner.plan_question_async(
                 request.question, router, config.max_tokens, retries=3
             )
@@ -75,7 +100,35 @@ async def generate_sparql(request: GenerateRequest):
         logger.error("Generation failed: %s", exc)
         raise HTTPException(status_code=500, detail=str(exc))
 
-    return {"sparql": sparql, "technique": technique}
+    return {
+        "sparql": sparql,
+        "technique": technique,
+        "plan": plan.to_dict() if plan else None,
+    }
+
+
+@app.post("/plan")
+async def plan_question(request: PlanRequest):
+    """Run the planner only, without generating SPARQL."""
+
+    provider = request.provider or config.default_provider
+    model = request.model or config.default_model
+
+    logger.info(
+        "Received plan request provider=%s, model=%s", provider, model
+    )
+
+    try:
+        router = ModelRouter(provider=provider, model=model)
+        plan = await planner.plan_question_async(
+            request.question, router, config.max_tokens, retries=3
+        )
+        logger.info("[Planner] (async) Context:\n%s", plan.as_bullet_list())
+    except Exception as exc:
+        logger.error("Plan generation failed: %s", exc)
+        raise HTTPException(status_code=500, detail=str(exc))
+
+    return {"plan": plan.to_dict()}
 
 
 if __name__ == "__main__":

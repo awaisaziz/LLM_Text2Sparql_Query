@@ -7,18 +7,24 @@
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Text-to-SPARQL Chat</h1>
-            <p>Generate SPARQL queries from natural language questions.</p>
+    <div class="page">
+        <header class="topbar">
+            <div>
+                <p class="eyebrow">SparqMind Playground</p>
+                <h1>Chat, Plan, and Execute SPARQL</h1>
+                <p class="lede">Pick your LLM provider and model, choose zero-shot or chain-of-thought, review the plan, and execute it to generate SPARQL.</p>
+            </div>
         </header>
-        <main>
-            <div class="form">
-                <label for="question">Question</label>
-                <textarea id="question" placeholder="Enter your question..."></textarea>
 
-                <div class="controls">
-                    <div>
+        <div class="workspace">
+            <section class="panel form-panel">
+                <div class="field">
+                    <label for="question">Question</label>
+                    <textarea id="question" placeholder="Ask anything about DBpedia..."></textarea>
+                </div>
+
+                <div class="grid three">
+                    <div class="field">
                         <label for="provider">Provider</label>
                         <select id="provider">
                             <option value="openai">OpenAI</option>
@@ -27,26 +33,61 @@
                             <option value="openrouter">OpenRouter</option>
                         </select>
                     </div>
-                    <div>
+                    <div class="field">
                         <label for="model">Model</label>
                         <input id="model" type="text" value="gpt-4.1" />
                     </div>
-                    <div>
-                        <label for="technique">Technique</label>
-                        <select id="technique">
-                            <option value="zero_shot">Zero-Shot</option>
-                            <option value="chain_of_thought" disabled>Chain-of-Thought (coming soon)</option>
-                            <option value="dynamic_prompt" disabled>Dynamic Prompt (coming soon)</option>
-                        </select>
+                    <div class="field">
+                        <label>Technique</label>
+                        <div class="toggle" id="technique-toggle">
+                            <button data-technique="zero_shot" class="active">Zero-shot</button>
+                            <button data-technique="chain_of_thought">Chain-of-thought</button>
+                        </div>
                     </div>
                 </div>
-                <button id="generate">Generate SPARQL</button>
-            </div>
-            <div id="chat">
-                <div class="message system">Welcome! Ask a question to generate SPARQL.</div>
-            </div>
-        </main>
+
+                <div class="actions">
+                    <button id="plan" class="ghost">Plan Question</button>
+                    <button id="execute" class="primary">Execute</button>
+                </div>
+
+                <div id="chat" class="chat">
+                    <div class="message system">Welcome! Ask a question, generate a plan, and execute it to see the SPARQL.</div>
+                </div>
+            </section>
+
+            <aside class="panel plan-panel">
+                <div class="plan-header">
+                    <div>
+                        <p class="eyebrow">Planner</p>
+                        <h2>Review &amp; edit before execution</h2>
+                        <p class="muted">Entities, relations, and reasoning steps can be refined before generating SPARQL.</p>
+                    </div>
+                    <div class="pill" id="plan-status">Zero-shot mode</div>
+                </div>
+
+                <div id="plan-fields" class="plan-fields hidden">
+                    <div class="field">
+                        <label for="entities">Entities (one per line: label | URI)</label>
+                        <textarea id="entities" placeholder="Eiffel Tower | http://dbpedia.org/resource/Eiffel_Tower"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="relations">Relations (one per line: label | URI)</label>
+                        <textarea id="relations" placeholder="location | dbo:location"></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="thought">Chain-of-thought steps</label>
+                        <textarea id="thought" placeholder="1. Identify the entity\n2. Retrieve the requested attribute"></textarea>
+                    </div>
+                </div>
+
+                <div id="plan-empty" class="empty-plan">
+                    <p>Select <strong>Chain-of-thought</strong> to request a plan. Nothing to review in zero-shot mode.</p>
+                </div>
+            </aside>
+        </div>
     </div>
+
     <script src="app.js"></script>
 </body>
 </html>

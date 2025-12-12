@@ -56,6 +56,15 @@ class PlannerOutput:
             *(steps or ["1. Outline reasoning steps for the question."]),
         ])
 
+    def to_dict(self) -> Dict[str, Any]:
+        """Return a JSON-serializable dict version of the plan."""
+
+        return {
+            "entities": self.entities,
+            "relations": self.relations,
+            "chain_of_thought": self.chain_of_thought,
+        }
+
 
 def clean_json(text: str) -> str:
     """Strip code fences and keep the JSON payload."""

@@ -54,6 +54,8 @@ uvicorn backend.main:app --reload
 ```
 The server listens on `http://127.0.0.1:8000` and exposes `POST /generate`.
 
+An additional `POST /plan` endpoint is available to return the structured planner output (entities, relations, chain-of-thought) without generating SPARQL. This is used by the updated frontend so users can review and edit the reasoning steps before execution.
+
 ## CLI Batch Generation
 Generate SPARQL for a dataset from the root directory:
 ```bash
@@ -67,7 +69,16 @@ python backend/main.py --generate-dataset ../data/qald_9_train_100.json --techni
 - Predictions are written to `outputs/predicted/predictions.json`; logs are written to `outputs/logs/backend.log`.
 
 ## Frontend Usage
-Open `frontend/index.html` in a browser. Ensure the backend server is running at `http://127.0.0.1:8000` so the UI can call the `/generate` endpoint.
+You can open `frontend/index.html` directly in a browser, or serve it locally for friendlier CORS behavior:
+```bash
+./frontend/serve_frontend.sh 4173
+```
+then visit `http://127.0.0.1:4173`.
+
+In the UI you can:
+- Choose provider/model and toggle between **Zero-shot** (no planner) or **Chain-of-thought** (planner enabled).
+- Click **Plan Question** to call `POST /plan` and populate editable fields for entities, relations, and reasoning steps.
+- Refine the plan and press **Execute** to submit it to `POST /generate` and stream the resulting SPARQL back into the chat.
 
 ## Result and Evaluation
 Run the dataset and predicted result and store the files in the executed folder. Then use both files from the executed folder to generate the gerbil standard evaluation of the sparql quries.
