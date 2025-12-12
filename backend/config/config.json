@@ -5,7 +5,7 @@
   "default_provider": "gemini",
   "default_model": "gemini-2.5-flash-lite",
   "default_prompting_technique": "zero_shot",
-  "max_tokens": 4000,
-  "request_delay": 65.0,
-  "output_file": "../outputs/predicted/CoT_gemini-2.5-flash-lite.json"
+  "max_tokens": 5000,
+  "request_delay": 0.0,
+  "output_file": "../outputs/predicted/deepseek-chat_CoT.json"
 }

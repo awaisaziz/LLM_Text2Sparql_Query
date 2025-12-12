@@ -20,9 +20,13 @@ load_dotenv(PROJECT_ROOT / ".env", override=False)
 load_dotenv(override=False)
 
 from backend.config.config_loader import load_config, Config
-from backend.generation.generate_sparql import batch_generate
+from backend.generation import planner
+from backend.generation.generate_sparql import (
+    batch_generate,
+    _build_prompts,
+    _generate_with_retries_async,
+)
 from backend.models.model_router import ModelRouter
-from backend.prompts import prompt_builder
 from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -38,18 +42,6 @@ class GenerateRequest(BaseModel):
     technique: str = "zero_shot"
 
 
-def _build_prompts(question: str, technique: str):
-    technique = technique.lower()
-    if technique == "zero_shot":
-        return prompt_builder.zero_shot(question)
-    elif technique == "graph_of_thought":
-        return prompt_builder.graph_of_thought(question)
-    elif technique == "dynamic_prompt":
-        return prompt_builder.dynamic_prompt(question)
-    else:
-        raise ValueError(f"Unsupported prompting technique: {technique}")
-
-
 @app.post("/generate")
 async def generate_sparql(request: GenerateRequest):
     provider = request.provider or config.default_provider
@@ -59,15 +51,24 @@ async def generate_sparql(request: GenerateRequest):
     logger.info(
         "Received generation request provider=%s, model=%s, technique=%s", provider, model, technique
     )
-    prompts = _build_prompts(request.question, technique)
-    logger.info("User prompt: %s", prompts["user"])
-
     try:
         router = ModelRouter(provider=provider, model=model)
-        sparql = await router.generate(
-            system_prompt=prompts["system"],
-            user_prompt=prompts["user"],
+        plan = None
+        if technique.lower() in {"chain_of_thought", "graph_of_thought"}:
+            plan = await planner.plan_question_async(
+                request.question, router, config.max_tokens, retries=3
+            )
+            logger.info("[Planner] (async) Context:\n%s", plan.as_bullet_list())
+
+        prompts = _build_prompts(request.question, technique, plan)
+        logger.info("User prompt: %s", prompts["user"])
+
+        sparql = await _generate_with_retries_async(
+            router=router,
+            prompts=prompts,
+            question=request.question,
             max_tokens=config.max_tokens,
+            retries=3,
         )
         logger.info("Predicted SPARQL: %s", sparql)
     except Exception as exc:
