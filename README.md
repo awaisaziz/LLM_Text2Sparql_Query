@@ -82,10 +82,10 @@ To execute the run_query file for the predicted query:
 python run_query.py --input ../outputs/predicted/deepseek-chat_zero_shot.json --output executed/deepseek-chat_zero_shot_executed.json
 ```
 
-## Extending the System
-- Add new prompt strategies in `backend/prompts/prompt_builder.py`.
-- Register new providers in `backend/models/providers/` and wire them in `backend/models/model_router.py`.
-- Update `backend/config/config.json` to point to new datasets or change defaults.
+To execute the gerbil evaluation use the following command:
+```bash
+python eval_gerbil.py qald_9_train_100 deepseek-chat_CoT
+```
 
 ## Additional Documentation
 See `backend/README.md` and `frontend/README.md` for component-specific notes.
