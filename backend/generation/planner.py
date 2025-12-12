@@ -57,7 +57,7 @@ class PlannerOutput:
         ])
 
 
-def _clean_json(text: str) -> str:
+def clean_json(text: str) -> str:
     """Strip code fences and keep the JSON payload."""
     if not text:
         return ""
@@ -73,8 +73,8 @@ def _clean_json(text: str) -> str:
     return cleaned
 
 
-def _parse_plan(raw_response: str) -> Optional[PlannerOutput]:
-    payload = _clean_json(raw_response)
+def parse_plan(raw_response: str) -> Optional[PlannerOutput]:
+    payload = clean_json(raw_response)
     if not payload:
         return None
 
@@ -123,7 +123,7 @@ def plan_question_sync(
                 max_tokens=max_tokens,
             )
             logger.info("[Planner] Raw response: %s", raw)
-            plan = _parse_plan(raw)
+            plan = parse_plan(raw)
             if plan:
                 logger.info("[Planner] Parsed plan with %d entities and %d relations", len(plan.entities), len(plan.relations))
                 break
@@ -154,7 +154,7 @@ async def plan_question_async(
                 max_tokens=max_tokens,
             )
             logger.info("[Planner] (async) Raw response: %s", raw)
-            plan = _parse_plan(raw)
+            plan = parse_plan(raw)
             if plan:
                 logger.info(
                     "[Planner] (async) Parsed plan with %d entities and %d relations",

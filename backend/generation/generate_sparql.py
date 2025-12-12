@@ -19,7 +19,7 @@ from backend.utils.logger import get_logger
 logger = get_logger(__name__)
 
 
-def _build_prompts(question: str, technique: str, plan: Optional[planner.PlannerOutput] = None) -> Dict[str, str]:
+def build_prompts(question: str, technique: str, plan: Optional[planner.PlannerOutput] = None) -> Dict[str, str]:
     technique = technique.lower()
     if technique == "zero_shot":
         prompts = prompt_builder.zero_shot(question)
@@ -53,7 +53,7 @@ Return only the corrected SPARQL query.
 """.strip()
 
 
-def _parse_yes_no(raw: str) -> bool:
+def parse_yes_no(raw: str) -> bool:
     if not raw:
         return False
     normalized = raw.strip().upper()
@@ -64,7 +64,7 @@ def _parse_yes_no(raw: str) -> bool:
     return False
 
 
-def _review_query(
+def review_query(
     router: ModelRouter, question: str, sparql: str, max_tokens: int
 ) -> bool:
     review_prompt = f"Question: {question}\nSPARQL: {sparql}\nDoes this query answer the question?"
@@ -74,10 +74,10 @@ def _review_query(
         max_tokens=max_tokens,
     )
     logger.info("[Validation] Review response: %s", raw)
-    return _parse_yes_no(raw)
+    return parse_yes_no(raw)
 
 
-async def _review_query_async(
+async def review_query_async(
     router: ModelRouter, question: str, sparql: str, max_tokens: int
 ) -> bool:
     review_prompt = f"Question: {question}\nSPARQL: {sparql}\nDoes this query answer the question?"
@@ -87,10 +87,10 @@ async def _review_query_async(
         max_tokens=max_tokens,
     )
     logger.info("[Validation-Async] Review response: %s", raw)
-    return _parse_yes_no(raw)
+    return parse_yes_no(raw)
 
 
-def _correct_query(
+def correct_query(
     router: ModelRouter, question: str, sparql: str, max_tokens: int
 ) -> str:
     correction_prompt = (
@@ -108,7 +108,7 @@ def _correct_query(
     return cleaned
 
 
-async def _correct_query_async(
+async def correct_query_async(
     router: ModelRouter, question: str, sparql: str, max_tokens: int
 ) -> str:
     correction_prompt = (
@@ -126,7 +126,7 @@ async def _correct_query_async(
     return cleaned
 
 
-def _generate_with_retries(
+def generate_with_retries(
     router: ModelRouter,
     prompts: Dict[str, str],
     question: str,
@@ -150,25 +150,25 @@ def _generate_with_retries(
 
     for attempt in range(retries):
         try:
-            is_valid = _review_query(router, question, current_sparql, max_tokens)
+            is_valid = review_query(router, question, current_sparql, max_tokens)
             logger.info("[Validation] Attempt %d result: %s", attempt, is_valid)
             # if is_valid and validate_sparql_structure(current_sparql):
             if is_valid:
                 return current_sparql
-            current_sparql = _correct_query(
+            current_sparql = correct_query(
                 router, question, current_sparql, max_tokens
             )
         except Exception as exc:
             logger.error("[Validation] Error on attempt %d: %s", attempt, exc)
             if attempt < retries:
-                current_sparql = _correct_query(
+                current_sparql = correct_query(
                     router, question, current_sparql, max_tokens
                 )
 
     return current_sparql
 
 
-async def _generate_with_retries_async(
+async def generate_with_retries_async(
     router: ModelRouter,
     prompts: Dict[str, str],
     question: str,
@@ -192,38 +192,38 @@ async def _generate_with_retries_async(
 
     for attempt in range(retries):
         try:
-            is_valid = await _review_query_async(
+            is_valid = await review_query_async(
                 router, question, current_sparql, max_tokens
             )
             logger.info("[Validation-Async] Attempt %d result: %s", attempt, is_valid)
             # if is_valid and validate_sparql_structure(current_sparql):
             if is_valid:
                 return current_sparql
-            current_sparql = await _correct_query_async(
+            current_sparql = await correct_query_async(
                 router, question, current_sparql, max_tokens
             )
         except Exception as exc:
             logger.error("[Validation-Async] Error on attempt %d: %s", attempt, exc)
             if attempt < retries:
-                current_sparql = await _correct_query_async(
+                current_sparql = await correct_query_async(
                     router, question, current_sparql, max_tokens
                 )
 
     return current_sparql
 
 
-def _load_dataset(path: str) -> List[Dict[str, str]]:
+def load_dataset(path: str) -> List[Dict[str, str]]:
     return load_qald_9(path)
 
 
-def _save_predictions(predictions: List[Dict[str, str]], output_path: Path) -> None:
+def save_predictions(predictions: List[Dict[str, str]], output_path: Path) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     with output_path.open("w", encoding="utf-8") as f:
         json.dump(predictions, f, ensure_ascii=False, indent=2)
     logger.info("Saved predictions to %s", output_path)
 
 
-def _generate_entries(
+def generate_entries(
     entries: List[Dict[str, str]],
     config: Config,
     technique: str,
@@ -245,9 +245,9 @@ def _generate_entries(
             plan = planner.plan_question_sync(question, router, config.max_tokens)
             logger.info("[Planner] Context for question %s:\n%s", entry.get("id"), plan.as_bullet_list())
 
-        prompts = _build_prompts(question, technique, plan)
+        prompts = build_prompts(question, technique, plan)
 
-        sparql = _generate_with_retries(
+        sparql = generate_with_retries(
             router=router,
             prompts=prompts,
             question=question,
@@ -293,7 +293,7 @@ def batch_generate(
     dataset_path_resolved = Path(dataset_path)
     if not dataset_path_resolved.is_absolute():
         dataset_path_resolved = (project_root / dataset_path_resolved).resolve()
-    entries = _load_dataset(str(dataset_path_resolved))
+    entries = load_dataset(str(dataset_path_resolved))
 
     output_path = Path(config.output_file)
     if not output_path.is_absolute():
@@ -307,7 +307,7 @@ def batch_generate(
         num_samples if num_samples is not None else "all",
     )
 
-    predictions = _generate_entries(
+    predictions = generate_entries(
         entries,
         config,
         technique,
@@ -316,7 +316,7 @@ def batch_generate(
         num_samples=num_samples,
         request_delay=config.request_delay,
     )
-    _save_predictions(predictions, output_path)
+    save_predictions(predictions, output_path)
 
 
 if __name__ == "__main__":
