@@ -1,0 +1,502 @@
+[
+  {
+    "id": "1",
+    "en_ques": "list all boardgames by gmt.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?item WHERE { ?item a dbo:BoardGame . ?item dbo:publisher dbr:GMT_Games . }"
+  },
+  {
+    "id": "2",
+    "en_ques": "who developed skype?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?entity WHERE { dbr:Skype dbo:developer ?entity . }"
+  },
+  {
+    "id": "3",
+    "en_ques": "which people were born in heraklion?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?person WHERE { ?person rdf:type dbo:Person . ?person dbo:birthPlace dbr:Heraklion . }"
+  },
+  {
+    "id": "4",
+    "en_ques": "in which u.s. state is area 51 located?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?state WHERE { dbr:Area_51 dbo:location ?location . ?location dbo:state ?state . }"
+  },
+  {
+    "id": "5",
+    "en_ques": "who is the mayor of new york city?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { dbr:New_York_City dbo:mayor ?x . }"
+  },
+  {
+    "id": "6",
+    "en_ques": "which countries have places with more than two caves?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?country WHERE { ?place dbo:numberOfCaves ?count . FILTER (?count > 2) ?place dbo:country ?country . }"
+  },
+  {
+    "id": "7",
+    "en_ques": "where did abraham lincoln die?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { dbr:Abraham_Lincoln dbo:deathPlace ?x . }"
+  },
+  {
+    "id": "8",
+    "en_ques": "which airports does air china serve?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?item WHERE { dbr:Air_China dbo:serves ?item . ?item rdf:type dbo:Airport . }"
+  },
+  {
+    "id": "9",
+    "en_ques": "give me all actors starring in movies directed by and starring william shatner.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?actor WHERE { ?movie dbo:director dbr:William_Shatner . ?movie dbo:starring dbr:William_Shatner . ?movie dbo:starring ?actor . FILTER (?actor != dbr:William_Shatner) }"
+  },
+  {
+    "id": "10",
+    "en_ques": "what are the official languages of the philippines?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?language WHERE { dbr:Philippines dbo:officialLanguage ?language . }"
+  },
+  {
+    "id": "11",
+    "en_ques": "give me all danish films.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?film WHERE { ?film a dbo:Film . ?film dbo:country dbr:Denmark . }"
+  },
+  {
+    "id": "12",
+    "en_ques": "which movies starring brad pitt were directed by guy ritchie?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?movie WHERE { ?movie dbo:starring dbr:Brad_Pitt . ?movie dbo:director dbr:Guy_Ritchie . }"
+  },
+  {
+    "id": "13",
+    "en_ques": "give me the grandchildren of bruce lee.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?grandchild WHERE { dbr:Bruce_Lee dbo:child ?child . ?child dbo:child ?grandchild . }"
+  },
+  {
+    "id": "14",
+    "en_ques": "which other weapons did the designer of the uzi develop?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?weapon WHERE { dbr:Uzi dbo:designer ?designer . ?weapon a dbo:Weapon ; dbo:designer ?designer ; rdfs:label ?weaponLabel . FILTER (?weapon != dbr:Uzi) FILTER (lang(?weaponLabel) = 'en') }"
+  },
+  {
+    "id": "15",
+    "en_ques": "who is the owner of universal studios?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?x WHERE { dbr:Universal_Studios dbo:owner ?x . ?x rdfs:label ?label . FILTER(LANG(?label) = 'en') }"
+  },
+  {
+    "id": "16",
+    "en_ques": "which state of the usa has the highest population density?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?state WHERE { ?state a dbo:State . ?state dbo:populationDensity ?density . }"
+  },
+  {
+    "id": "17",
+    "en_ques": "which monarchs were married to a german?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?monarch WHERE { ?monarch dbo:spouse ?spouse . ?spouse dbo:birthPlace/dbo:country dbr:Germany . }"
+  },
+  {
+    "id": "18",
+    "en_ques": "which organizations were founded in 1950?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?item WHERE { ?item dbo:foundingYear '1950'^^<http://www.w3.org/2001/XMLSchema#gYear> . ?item rdf:type dbo:Organisation . }"
+  },
+  {
+    "id": "19",
+    "en_ques": "who created the comic captain america?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?creator WHERE { dbr:Captain_America dbo:creator ?creator . }"
+  },
+  {
+    "id": "20",
+    "en_ques": "give me the apollo 14 astronauts.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?entity WHERE { dbr:Apollo_14 dbo:crewMember ?entity . }"
+  },
+  {
+    "id": "21",
+    "en_ques": "who wrote the book the pillars of the earth?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?author WHERE { dbr:The_Pillars_of_the_Earth dbo:author ?author . }"
+  },
+  {
+    "id": "22",
+    "en_ques": "which state of the united states of america has the highest density?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?state WHERE { ?state dbo:country dbr:United_States ; dbo:populationDensity ?density . FILTER NOT EXISTS { ?state dbo:type dbr:Federal_district } }"
+  },
+  {
+    "id": "23",
+    "en_ques": "which spaceflights were launched from baikonur?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?mission WHERE { ?mission a dbo:SpaceMission . ?mission dbo:launchSite dbr:Baikonur_Cosmodrome . }"
+  },
+  {
+    "id": "24",
+    "en_ques": "give me a list of all trumpet players that were bandleaders.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?item WHERE { ?item dbo:instrument <http://dbpedia.org/resource/Trumpet> . ?item dbo:occupation <http://dbpedia.org/resource/Bandleader> . }"
+  },
+  {
+    "id": "25",
+    "en_ques": "which u.s. states are in the same timezone as utah?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?label WHERE { dbr:Utah dbo:timeZone ?utahTimezone . ?state dbo:timeZone ?utahTimezone ; dbo:isPartOf dbr:United_States ; rdfs:label ?label . FILTER (?state != dbr:Utah) FILTER (lang(?label) = 'en') }"
+  },
+  {
+    "id": "26",
+    "en_ques": "which u.s. states possess gold minerals?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?state WHERE { ?state dbo:country dbr:United_States . ?state dbo:mineral ?mineral . ?mineral rdfs:label ?label . FILTER(CONTAINS(LCASE(?label), 'gold') && LANG(?label) = 'en') }"
+  },
+  {
+    "id": "27",
+    "en_ques": "who is the daughter of ingrid bergman married to?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?spouse WHERE { dbr:Ingrid_Bergman dbo:child ?daughter . ?daughter dbo:spouse ?spouse . }"
+  },
+  {
+    "id": "28",
+    "en_ques": "how deep is lake placid?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?maximumDepth WHERE { dbr:Lake_Placid_(New_York) dbo:maximumDepth ?maximumDepth . }"
+  },
+  {
+    "id": "29",
+    "en_ques": "show me all museums in london.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?x WHERE { ?x rdf:type dbo:Museum . ?x dbo:location dbr:London . }"
+  },
+  {
+    "id": "30",
+    "en_ques": "which caves have more than 3 entrances?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?x WHERE { ?x a dbo:Cave . ?x dbo:numberOfEntrances ?entrances . FILTER (?entrances > 3) }"
+  },
+  {
+    "id": "31",
+    "en_ques": "who is the tallest player of the atlanta falcons?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT ?player WHERE { ?player dbo:team dbr:Atlanta_Falcons . ?player dbo:height ?height . }"
+  },
+  {
+    "id": "32",
+    "en_ques": "what are the top-10 action role-playing video games according to ign?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?item WHERE { ?item dbo:genre dbr:Action_role-playing_game . ?item dbo:review ?review . ?review dbo:reviewer dbr:IGN . ?review dbo:rating ?rating . }"
+  },
+  {
+    "id": "33",
+    "en_ques": "give me all writers that won the nobel prize in literature.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbp: <http://dbpedia.org/property/> PREFIX res: <http://dbpedia.org/resource/> SELECT DISTINCT ?x WHERE { ?x dbo:award res:Nobel_Prize_in_Literature . ?x rdf:type dbo:Writer . }"
+  },
+  {
+    "id": "34",
+    "en_ques": "show me all basketball players that are higher than 2 meters.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT ?x WHERE { ?x a dbo:BasketballPlayer . ?x dbo:height ?height . FILTER (?height > 2.0) }"
+  },
+  {
+    "id": "35",
+    "en_ques": "when was the statue of liberty built?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?completionDate WHERE { dbr:Statue_of_Liberty dbo:completionDate ?completionDate . }"
+  },
+  {
+    "id": "36",
+    "en_ques": "which states border illinois?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?state WHERE { dbr:Illinois dbo:border ?state . ?state rdf:type dbo:AdministrativeRegion . }"
+  },
+  {
+    "id": "37",
+    "en_ques": "who developed minecraft?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?entity WHERE { dbr:Minecraft dbo:developer ?entity . }"
+  },
+  {
+    "id": "38",
+    "en_ques": "where did hillel slovak die?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?deathPlace WHERE { dbr:Hillel_Slovak dbo:deathPlace ?deathPlace . }"
+  },
+  {
+    "id": "39",
+    "en_ques": "what movies does jesse eisenberg play in?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?movie WHERE { ?movie dbo:starring dbr:Jesse_Eisenberg . ?movie rdfs:label ?label . FILTER(LANG(?label) = 'en') }"
+  },
+  {
+    "id": "40",
+    "en_ques": "give all swimmers that were born in moscow.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?x WHERE { ?x dbo:birthPlace dbr:Moscow . ?x dbo:occupation ?occupation . ?occupation rdf:type dbo:Swimmer . }"
+  },
+  {
+    "id": "41",
+    "en_ques": "give me all cosmonauts.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?item WHERE { ?item dbo:occupation dbr:Cosmonaut . }"
+  },
+  {
+    "id": "42",
+    "en_ques": "give me all swiss non-profit organizations.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?entity WHERE { ?entity rdf:type dbo:Non-ProfitOrganisation . ?entity dbo:country dbr:Switzerland . }"
+  },
+  {
+    "id": "43",
+    "en_ques": "which presidents were born in 1945?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT DISTINCT ?item WHERE { ?item dbo:birthDate ?birthDate . ?item dbo:office 'President'@en . FILTER (year(?birthDate) = 1945) }"
+  },
+  {
+    "id": "44",
+    "en_ques": "what kind of music did lou reed play?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?genre WHERE { dbr:Lou_Reed dbo:genre ?genre . }"
+  },
+  {
+    "id": "45",
+    "en_ques": "where do the red sox play?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { dbr:Boston_Red_Sox dbo:ground ?x . }"
+  },
+  {
+    "id": "46",
+    "en_ques": "show a list of soccer clubs that play in the bundesliga.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?item WHERE { ?item a dbo:SoccerClub . ?item dbo:league dbr:Bundesliga . }"
+  },
+  {
+    "id": "47",
+    "en_ques": "which volcanos in japan erupted since 2000?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?item WHERE { ?item a dbo:Volcano . ?item dbo:location dbr:Japan . ?item dbo:eruptionYear ?year . FILTER (?year >= 2000) }"
+  },
+  {
+    "id": "48",
+    "en_ques": "which bridges cross the seine?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?bridge WHERE { ?bridge a dbo:Bridge . ?bridge dbo:crosses dbr:Seine . }"
+  },
+  {
+    "id": "49",
+    "en_ques": "what is the official color of the university of oxford?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?colour WHERE { dbr:University_of_Oxford dbo:officialColour ?colour . }"
+  },
+  {
+    "id": "50",
+    "en_ques": "how many films did hal roach produce?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT (COUNT(DISTINCT ?film) AS ?count) WHERE { ?film dbo:producer dbr:Hal_Roach . }"
+  },
+  {
+    "id": "51",
+    "en_ques": "give me all danish movies.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?item WHERE { ?item a dbo:Film . ?item dbo:country dbr:Denmark . }"
+  },
+  {
+    "id": "52",
+    "en_ques": "what is the most frequent cause of death?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?cause WHERE { ?cause a dbo:Disease . ?cause dbo:deaths ?deaths . }"
+  },
+  {
+    "id": "53",
+    "en_ques": "who are the four youngest mvp basketball players?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?playerName WHERE { ?player a dbo:BasketballPlayer . ?player dbo:award 'NBA Most Valuable Player Award'@en . ?player dbo:birthDate ?birthDate . ?player rdfs:label ?playerName . FILTER(LANG(?playerName) = 'en') }"
+  },
+  {
+    "id": "54",
+    "en_ques": "give me all companies in munich.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?company WHERE { ?company a dbo:Company . ?company dbo:locationCity dbr:Munich . }"
+  },
+  {
+    "id": "55",
+    "en_ques": "give me the capitals of all countries that the himalayas run through.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX dbp: <http://dbpedia.org/property/> SELECT DISTINCT ?capital WHERE { dbr:Himalayas dbo:country ?country . ?country a dbo:Country . ?country dbo:capital ?capital . }"
+  },
+  {
+    "id": "56",
+    "en_ques": "how many movies did park chan-wook direct?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT (COUNT(DISTINCT ?movie) AS ?count) WHERE { ?movie dbo:director dbr:Park_Chan-wook . }"
+  },
+  {
+    "id": "57",
+    "en_ques": "which rivers flow into a german lake?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dct: <http://purl.org/dc/terms/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX category: <http://dbpedia.org/resource/Category:> SELECT DISTINCT ?river WHERE { ?lake dct:subject category:Lakes_of_Germany . ?river dbo:riverMouth ?lake . ?river rdf:type dbo:River . }"
+  },
+  {
+    "id": "58",
+    "en_ques": "how many airlines are there?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT (COUNT(DISTINCT ?x) AS ?count) WHERE { ?x rdf:type dbo:Airline . }"
+  },
+  {
+    "id": "59",
+    "en_ques": "give me all islands that belong to japan.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?item WHERE { ?item rdf:type dbo:Island . ?item dbo:country dbr:Japan . }"
+  },
+  {
+    "id": "60",
+    "en_ques": "how many inhabitants does maribor have?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?population WHERE { dbr:Maribor dbo:populationTotal ?population . }"
+  },
+  {
+    "id": "61",
+    "en_ques": "give me all apollo 14 astronauts.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?item WHERE { dbr:Apollo_14 dbo:crewMember ?item . ?item a dbo:Astronaut . }"
+  },
+  {
+    "id": "62",
+    "en_ques": "which companies have more than 1 million employees?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?x WHERE { ?x a dbo:Company . ?x dbo:numberOfEmployees ?employees . FILTER (?employees > 1000000) }"
+  },
+  {
+    "id": "63",
+    "en_ques": "in which films directed by garry marshall was julia roberts starring?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?film WHERE { ?film dbo:director dbr:Garry_Marshall . ?film dbo:starring dbr:Julia_Roberts . }"
+  },
+  {
+    "id": "64",
+    "en_ques": "give me all soccer clubs in the premier league.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?item WHERE { ?item dbo:league dbr:Premier_League . ?item rdf:type dbo:AssociationFootballClub . }"
+  },
+  {
+    "id": "65",
+    "en_ques": "what is the highest place of the urals?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?entity WHERE { dbr:Ural_Mountains dbo:highestPlace ?entity . }"
+  },
+  {
+    "id": "66",
+    "en_ques": "who is the governor of wyoming?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { dbr:Wyoming dbo:governor ?x . }"
+  },
+  {
+    "id": "67",
+    "en_ques": "where did the architect of the eiffel tower study?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?almaMater WHERE { dbr:Eiffel_Tower dbo:architect ?architect . ?architect dbo:almaMater ?almaMater . }"
+  },
+  {
+    "id": "68",
+    "en_ques": "give me all world heritage sites designated within the past two years.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT DISTINCT ?item WHERE { ?item a dbo:WorldHeritageSite . ?item dbo:year ?year . BIND(YEAR(NOW()) AS ?currentYear) FILTER(?year >= ?currentYear - 2 && ?year <= ?currentYear) }"
+  },
+  {
+    "id": "69",
+    "en_ques": "give me all actors who were born in paris after 1950.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT DISTINCT ?item WHERE { ?item dbo:occupation dbr:Actor . ?item dbo:birthPlace dbr:Paris . ?item dbo:birthDate ?birthDate . FILTER (YEAR(?birthDate) > 1950) }"
+  },
+  {
+    "id": "70",
+    "en_ques": "which movies star both liz taylor and richard burton?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?movie WHERE { ?movie a dbo:Film . ?movie dbo:starring dbr:Elizabeth_Taylor . ?movie dbo:starring dbr:Richard_Burton . }"
+  },
+  {
+    "id": "71",
+    "en_ques": "give me all australian nonprofit organizations.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX dbp: <http://dbpedia.org/property/> SELECT DISTINCT ?entity WHERE { ?entity dbo:country dbr:Australia . ?entity dbo:type dbr:Nonprofit_organization . }"
+  },
+  {
+    "id": "72",
+    "en_ques": "which pope succeeded john paul ii?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?successor WHERE { dbr:Pope_John_Paul_II dbo:successor ?successor . }"
+  },
+  {
+    "id": "73",
+    "en_ques": "give me all esa astronauts.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?astronaut WHERE { ?astronaut rdf:type dbo:Astronaut . ?astronaut dbo:agency dbr:European_Space_Agency . }"
+  },
+  {
+    "id": "74",
+    "en_ques": "who was president of pakistan in 1978?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbp: <http://dbpedia.org/property/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT DISTINCT ?president WHERE { dbr:Pakistan dbo:president ?president . ?president dbo:activeYearsStartYear ?startYear . ?president dbo:activeYearsEndYear ?endYear . FILTER (xsd:integer(?startYear) <= 1978 && xsd:integer(?endYear) >= 1978) }"
+  },
+  {
+    "id": "75",
+    "en_ques": "who is the owner of rolls-royce?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?owner_name WHERE { dbr:Rolls-Royce_Holdings dbo:owner ?owner . ?owner rdfs:label ?owner_name . FILTER(LANG(?owner_name) = 'en') }"
+  },
+  {
+    "id": "76",
+    "en_ques": "how many museums does paris have?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT (COUNT(?museum) AS ?count) WHERE { dbr:Paris dbo:museum ?museum . }"
+  },
+  {
+    "id": "77",
+    "en_ques": "where was jfk assassinated?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { dbr:John_F._Kennedy dbo:deathPlace ?x . }"
+  },
+  {
+    "id": "78",
+    "en_ques": "give me all federal chancellors of germany.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?x WHERE { dbr:Germany dbo:leader ?x . ?x dbo:position dbr:Chancellor_of_Germany . }"
+  },
+  {
+    "id": "79",
+    "en_ques": "show me everyone who was born on halloween.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> SELECT DISTINCT ?entity WHERE { ?entity dbo:birthDate ?date . FILTER (MONTH(?date) = 10 && DAY(?date) = 31) }"
+  },
+  {
+    "id": "80",
+    "en_ques": "which beer originated in ireland?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?x WHERE { ?x rdf:type dbo:Beer . { ?x dbo:origin dbr:Ireland . } UNION { ?x dbo:country dbr:Ireland . } }"
+  },
+  {
+    "id": "81",
+    "en_ques": "to which countries does the himalayan mountain system extend?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?country WHERE { dbr:Himalayas dbo:country ?country . }"
+  },
+  {
+    "id": "82",
+    "en_ques": "which actors were born in germany?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { ?x rdf:type dbo:Actor . ?x dbo:birthPlace dbr:Germany . }"
+  },
+  {
+    "id": "83",
+    "en_ques": "how much carbs does peanut butter have?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?carbohydrateContent WHERE { dbr:Peanut_butter dbo:carbohydrateContent ?carbohydrateContent . }"
+  },
+  {
+    "id": "84",
+    "en_ques": "who produced the most films?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> SELECT ?producer WHERE { ?film dbo:producer ?producer . }"
+  },
+  {
+    "id": "85",
+    "en_ques": "how many employees does google have?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?numberOfEmployees WHERE { dbr:Google dbo:numberOfEmployees ?numberOfEmployees . }"
+  },
+  {
+    "id": "86",
+    "en_ques": "give me all actors who were born in berlin.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?actor WHERE { ?actor dbo:birthPlace dbr:Berlin . ?actor a dbo:Actor . }"
+  },
+  {
+    "id": "87",
+    "en_ques": "who created goofy?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT ?entity WHERE { dbr:Goofy dbo:creator ?entity . }"
+  },
+  {
+    "id": "88",
+    "en_ques": "which music albums contain the song last christmas?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> SELECT DISTINCT ?album WHERE { ?song rdfs:label 'Last Christmas'@en . ?album dbo:track ?song . ?album a dbo:Album . }"
+  },
+  {
+    "id": "89",
+    "en_ques": "when was alberta admitted as province?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?admissionDate WHERE { dbr:Alberta dbo:admissionDate ?admissionDate . }"
+  },
+  {
+    "id": "90",
+    "en_ques": "how many missions does the soyuz programme have?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?numberOfMissions WHERE { dbr:Soyuz_programme dbo:numberOfMissions ?numberOfMissions . }"
+  },
+  {
+    "id": "91",
+    "en_ques": "give me all the tv shows with neil patrick harris.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?item WHERE { ?item dbo:starring dbr:Neil_Patrick_Harris . ?item rdf:type dbo:TelevisionShow . }"
+  },
+  {
+    "id": "92",
+    "en_ques": "when were the hells angels founded?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?foundingDate WHERE { dbr:Hells_Angels dbo:foundingDate ?foundingDate . }"
+  },
+  {
+    "id": "93",
+    "en_ques": "what is the net income of apple?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?netIncome WHERE { dbr:Apple_Inc. dbo:netIncome ?netIncome . }"
+  },
+  {
+    "id": "94",
+    "en_ques": "give me all swedish holidays.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { ?x a dbo:Holiday . ?x dbo:country dbr:Sweden . }"
+  },
+  {
+    "id": "95",
+    "en_ques": "in which city was the former dutch queen juliana buried?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?city WHERE { dbr:Juliana_of_the_Netherlands dbo:restingPlace ?burialPlace . ?burialPlace dbo:location ?city . ?city a dbo:City . }"
+  },
+  {
+    "id": "96",
+    "en_ques": "list all the musicals with music by leonard bernstein.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT ?item WHERE { ?item dbo:musicComposer dbr:Leonard_Bernstein . ?item rdf:type dbo:Musical . }"
+  },
+  {
+    "id": "97",
+    "en_ques": "give me all companies in the advertising industry.",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT DISTINCT ?company WHERE { ?company dbo:industry dbr:Advertising . ?company a dbo:Company . }"
+  },
+  {
+    "id": "98",
+    "en_ques": "what is the largest metropolitan area in washington state?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?entity WHERE { ?entity a dbo:MetropolitanArea . ?entity dbo:location dbr:Washington_(state) . ?entity dbo:populationTotal ?population . }"
+  },
+  {
+    "id": "99",
+    "en_ques": "who killed john lennon?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> SELECT ?x WHERE { dbr:John_Lennon dbo:killer ?x . }"
+  },
+  {
+    "id": "100",
+    "en_ques": "which writers studied in istanbul?",
+    "sparql": "PREFIX dbo: <http://dbpedia.org/ontology/> PREFIX dbr: <http://dbpedia.org/resource/> PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?item WHERE { ?item rdf:type dbo:Writer . ?item dbo:almaMater dbr:Istanbul . }"
+  }
+]
