@@ -229,6 +229,28 @@ button.ghost {
   gap: 12px;
 }
 
+.plan-actions {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.plan-actions button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.plan-actions .hint {
+  margin: 0;
+  font-size: 13px;
+}
+
 .control-stack {
   margin-top: auto;
   padding-top: 4px;

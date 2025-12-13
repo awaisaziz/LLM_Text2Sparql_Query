@@ -6,8 +6,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const chat = document.getElementById("chat");
   const planBtn = document.getElementById("plan");
   const executeBtn = document.getElementById("execute");
+  const executePlanBtn = document.getElementById("execute-plan");
   const planFields = document.getElementById("plan-fields");
   const planEmpty = document.getElementById("plan-empty");
+  const planActions = document.getElementById("plan-actions");
   const planStatus = document.getElementById("plan-status");
   const entitiesInput = document.getElementById("entities");
   const relationsInput = document.getElementById("relations");
@@ -33,6 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const cot = technique === "chain_of_thought";
     planFields.classList.toggle("hidden", !cot);
     planEmpty.classList.toggle("hidden", cot);
+    planActions.classList.add("hidden");
     planStatus.textContent = cot ? "Chain-of-thought plan" : "Zero-shot mode";
   }
 
@@ -40,6 +43,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!plan) return;
     planFields.classList.remove("hidden");
     planEmpty.classList.add("hidden");
+    planActions.classList.remove("hidden");
     planStatus.textContent = "Plan ready";
 
     const toLines = (items = []) =>
@@ -128,6 +132,54 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function executePlan() {
+    if (planFields.classList.contains("hidden")) {
+      appendMessage("Request a chain-of-thought plan before executing it.", "system");
+      return;
+    }
+
+    const question = questionInput.value.trim() || lastQuestion;
+    if (!question) {
+      appendMessage("Please enter a question.", "system");
+      return;
+    }
+
+    const payload = {
+      question,
+      provider: providerSelect.value,
+      model: modelInput.value,
+      technique: "chain_of_thought",
+      plan: buildPlanPayload(),
+    };
+
+    setTechnique("chain_of_thought");
+    planStatus.textContent = "Executing reviewed plan";
+    appendMessage(question, "user");
+    appendMessage("Executing chain-of-thought plan for SPARQL...", "system");
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        appendMessage(`Error: ${errText}`, "system");
+        return;
+      }
+
+      const data = await response.json();
+      if (data.plan) {
+        renderPlan(data.plan);
+      }
+      appendMessage(data.sparql || "No SPARQL returned", "assistant");
+    } catch (error) {
+      appendMessage(`Request failed: ${error}`, "system");
+    }
+  }
+
   async function execute() {
     const question = questionInput.value.trim() || lastQuestion;
     if (!question) {
@@ -183,6 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   planBtn.addEventListener("click", requestPlan);
   executeBtn.addEventListener("click", execute);
+  executePlanBtn.addEventListener("click", executePlan);
 
   setTechnique(currentTechnique);
 });
