@@ -1,19 +1,30 @@
 # SparqMind: An Intelligent SPARQL Reasoning Engine
 
-**SparqMind** is a modular, multi-provider **Text-to-SPARQL reasoning engine** designed to convert natural language questions into executable SPARQL queries over **DBpedia**. The system is optimized for research and experimentation using benchmark datasets such as **QALD-9 (100 queries)**, and provides a flexible, extensible architecture for prompt-driven SPARQL generation.
+**SparqMind** is a research-oriented **Text-to-SPARQL reasoning engine** designed to translate natural language questions into executable SPARQL queries over **DBpedia**. The system focuses on improving the *semantic correctness* and *interpretability* of LLM-generated SPARQL queries through explicit reasoning and LLM-internal self-validation.
 
-SparqMind integrates several core components:
+Unlike black-box Text-to-SPARQL pipelines, SparqMind adopts a **planning-enhanced generation framework** in which entities, relations, and query structure are explicitly derived prior to SPARQL generation. These intermediate reasoning artifacts are exposed through an interactive interface, enabling inspection, correction, and human-in-the-loop interaction before query execution.
 
-* **Zero-Shot prompting** for baseline SPARQL generation
-* **Multi-LLM routing** across OpenAI, DeepSeek, Gemini, and OpenRouter
-* **Batch SPARQL generation** with a CLI interface for dataset-level experiments
-* **A modern React chat interface** for conversational, ChatGPT-style querying
-* **A configurable backend pipeline** built on FastAPI
-* **Structured logging and reproducible evaluation workflows**
+The system is implemented as a **modular and extensible research platform**, supporting both a **zero-shot baseline** and a **planning-enhanced configuration with bounded self-reflection**. SparqMind is evaluated on **100 questions from the QALD-9 benchmark over DBpedia**, with answer quality assessed using the **GERBIL evaluation framework**, making it suitable for reproducible experimentation and analysis.
 
-The backend exposes a clean `/generate` endpoint for interactive SPARQL generation, while the CLI mode enables rapid experimentation over datasets such as QALD-9. The frontend and backend run independently: React provides an aesthetic chat interface for users to ask questions naturally, and FastAPI handles prompt construction, model orchestration, SPARQL synthesis, and logging.
+### Core Features
 
-SparqMind is designed as a research oriented platform that makes it easy to explore how large language models interpret natural language intentions and map them to structured SPARQL queries in the context of DBpedia.
+- **Planning-enhanced Text-to-SPARQL generation** with explicit entity, relation, and query plan derivation  
+- **LLM-internal self-validation** with bounded iterative refinement  
+- **Zero-shot baseline** for controlled comparison  
+- **Interactive web-based interface** exposing intermediate reasoning steps  
+- **FastAPI backend** for prompt construction, model orchestration, and SPARQL synthesis  
+- **CLI-based batch generation and evaluation** for dataset-level experiments (e.g., QALD-9)
+
+SparqMind is intended for researchers and practitioners interested in understanding how large language models reason over knowledge graphs, and how structured reasoning and self-validation can improve the reliability of Text-to-SPARQL systems.
+
+### System Architecture
+
+The figure below illustrates the overall system architecture of SparqMind, highlighting the planning-enhanced Text-to-SPARQL pipeline, including entity and relation extraction, prompt construction, SPARQL generation, and LLM-driven self-validation.
+
+<p align="center">
+  <img src="figures/system_architecture.png" alt="SparqMind System Architecture" width="85%">
+</p>
+
 
 ## Repository Layout
 - **backend/** – FastAPI app, batch generator, prompt builders, and model routing code.
