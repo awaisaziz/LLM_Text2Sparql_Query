@@ -70,13 +70,12 @@ An additional `POST /plan` endpoint is available to return the structured planne
 ## CLI Batch Generation
 Generate SPARQL for a dataset from the root directory:
 ```bash
-python backend/main.py --generate-dataset ../data/qald_9_train_100.json --technique GoT --provider deepseek --model deepseek-chat --num_samples 1
+python backend/main.py --generate-dataset ../data/qald_9_train_100.json --technique chain_of_thought --provider deepseek --model deepseek-chat --num_samples 1
 ```
 
 - The dataset and output paths are resolved relative to the repository root, so the above command works as-is.
 - Omit `--provider` or `--model` to fall back to `backend/config/config.json` defaults.
 - Omit `--num_samples` to process the full dataset; pass a value to quickly test a subset.
-- Use `--config path/to/override.json` to point to an alternate config file.
 - Predictions are written to `outputs/predicted/predictions.json`; logs are written to `outputs/logs/backend.log`.
 
 ## Frontend Usage
