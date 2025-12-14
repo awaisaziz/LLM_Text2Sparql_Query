@@ -22,7 +22,7 @@ SparqMind is intended for researchers and practitioners interested in understand
 The figure below illustrates the overall system architecture of SparqMind, highlighting the planning-enhanced Text-to-SPARQL pipeline, including entity and relation extraction, prompt construction, SPARQL generation, and LLM-driven self-validation.
 
 <p align="center">
-  <img src="figures/system_architecture.png" alt="SparqMind System Architecture" width="85%">
+  <img src="figures/system Overview.png" alt="SparqMind System Architecture" width="85%">
 </p>
 
 
