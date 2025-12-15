@@ -25,6 +25,13 @@ The figure below illustrates the overall system architecture of SparqMind, highl
   <img src="figures/system_overview.png" alt="SparqMind System Architecture" width="85%">
 </p>
 
+### Frontend Interface
+
+The figure below shows the **SparqMind frontend**, where users can ask natural language questions and inspect the system’s intermediate reasoning. In planning-enhanced mode, the interface exposes extracted entities, relations, and a chain-of-thought query plan before SPARQL generation, enabling transparent and human-in-the-loop interaction.
+
+<p align="center">
+  <img src="figures/frontend_page.png" alt="SparqMind Frontend Interface" width="85%">
+</p>
 
 ## Repository Layout
 - **backend/** – FastAPI app, batch generator, prompt builders, and model routing code.
