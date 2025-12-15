@@ -1,10 +1,10 @@
 # SparqMind: An Intelligent SPARQL Reasoning Engine
 
-**SparqMind** is a research-oriented **Text-to-SPARQL reasoning engine** designed to translate natural language questions into executable SPARQL queries over **DBpedia**. The system focuses on improving the *semantic correctness* and *interpretability* of LLM-generated SPARQL queries through explicit reasoning and LLM-internal self-validation.
+**SparqMind** is a research-oriented **Text-to-SPARQL reasoning engine** designed to translate natural language questions into executable SPARQL queries over **DBpedia**. The system focuses on improving the *semantic correctness*, *reliability* and *interpretability* of LLM-generated SPARQL queries through explicit reasoning and LLM-internal self-validation.
 
 Unlike black-box Text-to-SPARQL pipelines, SparqMind adopts a **planning-enhanced generation framework** in which entities, relations, and query structure are explicitly derived prior to SPARQL generation. These intermediate reasoning artifacts are exposed through an interactive interface, enabling inspection, correction, and human-in-the-loop interaction before query execution.
 
-The system is implemented as a **modular and extensible research platform**, supporting both a **zero-shot baseline** and a **planning-enhanced configuration with bounded self-reflection**. SparqMind is evaluated on **100 questions from the QALD-9 benchmark over DBpedia**, with answer quality assessed using the **GERBIL evaluation framework**, making it suitable for reproducible experimentation and analysis.
+The system is implemented as a **modular and extensible research platform**, supporting both a **zero-shot baseline** and a **planning-enhanced configuration with bounded self-validation loop**. SparqMind is evaluated on **100 questions from the QALD-9 benchmark over DBpedia**, with answer quality assessed using the **GERBIL evaluation framework**, making it suitable for reproducible experimentation and analysis.
 
 ### Core Features
 
@@ -14,8 +14,6 @@ The system is implemented as a **modular and extensible research platform**, sup
 - **Interactive web-based interface** exposing intermediate reasoning steps  
 - **FastAPI backend** for prompt construction, model orchestration, and SPARQL synthesis  
 - **CLI-based batch generation and evaluation** for dataset-level experiments (e.g., QALD-9)
-
-SparqMind is intended for researchers and practitioners interested in understanding how large language models reason over knowledge graphs, and how structured reasoning and self-validation can improve the reliability of Text-to-SPARQL systems.
 
 ### System Architecture
 
@@ -46,6 +44,7 @@ The figure below shows the **SparqMind frontend**, where users can ask natural l
 - **outputs/** – Run artifacts.
   - **predicted/** – Generated SPARQL predictions.
   - **logs/** – Application logs (e.g., `backend.log`).
+- **results/** – Store GERBIL executed results.
 - **requirements.txt** – Python dependencies.
 
 ## Environment Setup (run from repo root)
@@ -90,7 +89,7 @@ You can open `frontend/index.html` directly in a browser, or serve it locally fo
 ```bash
 ./frontend/serve_frontend.sh 4173
 ```
-then visit `http://127.0.0.1:4173`.
+then visit `http://127.0.0.1:4173`
 
 In the UI you can:
 - Choose provider/model and toggle between **Zero-shot** (no planner) or **Chain-of-thought** (planner enabled).
@@ -98,7 +97,7 @@ In the UI you can:
 - Refine the plan and press **Execute** to submit it to `POST /generate` and stream the resulting SPARQL back into the chat.
 
 ## Result and Evaluation
-Run the dataset and predicted result and store the files in the executed folder. Then use both files from the executed folder to generate the gerbil standard evaluation of the sparql quries.
+Run the dataset and predicted result and store the files in the executed folder. Then use both files from the executed folder to generate the gerbil standard evaluation of the SPARQL queries.
 
 To execute the run_query file for the dataset:
 ```bash

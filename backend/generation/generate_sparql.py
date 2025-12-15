@@ -13,7 +13,7 @@ from backend.generation import planner
 from backend.models.model_router import ModelRouter
 from backend.prompts import prompt_builder
 from backend.utils.dataset_loader import load_qald_9
-from backend.utils.sparql_cleaner import clean_sparql, validate_sparql_structure
+from backend.utils.sparql_cleaner import clean_sparql
 from backend.utils.logger import get_logger
 
 logger = get_logger(__name__)

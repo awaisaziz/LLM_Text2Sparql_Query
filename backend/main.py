@@ -88,7 +88,7 @@ async def generate_sparql(request: GenerateRequest):
                 chain_of_thought=request.plan.chain_of_thought,
             )
             logger.info("[Planner] Using client-supplied plan:\n%s", plan.as_bullet_list())
-        elif technique.lower() in {"chain_of_thought", "graph_of_thought"}:
+        elif technique.lower() in {"chain_of_thought"}:
             plan = await planner.plan_question_async(
                 request.question, router, config.max_tokens, retries=3
             )
